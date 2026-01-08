@@ -1,2 +1,0 @@
-MiropayPaymentSDK
-miropay_payment_sdk
