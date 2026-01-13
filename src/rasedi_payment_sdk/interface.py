@@ -19,6 +19,7 @@ class ICreatePayment:
     title: str
     description: str
     redirectUrl: str
+    callbackUrl: str
     collectFeeFromCustomer: bool
     collectCustomerEmail: bool
     collectCustomerPhoneNumber: bool

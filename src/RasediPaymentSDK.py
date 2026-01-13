@@ -1,4 +1,4 @@
-from miropay_payment_sdk import (
+from rasedi_payment_sdk import (
     PaymentClient,
     IHttpResponse,
     ICreatePayment,

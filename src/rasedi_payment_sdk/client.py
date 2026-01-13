@@ -22,10 +22,10 @@ class PaymentClient:
     base_url: str
     is_test: bool = True
 
-    def __init__(self, api_key: str, api_secret: str, base_url: Optional[str] = None) -> None:
+    def __init__(self, private_key: str, secret_key: str, base_url: Optional[str] = None) -> None:
         # `api_key` is the private key, `api_secret` is the secret used as passphrase / indicator
-        self.__authenticator = Auth(api_key, api_secret)
-        self.is_test = self.check_is_test(api_secret)
+        self.__authenticator = Auth(private_key, secret_key)
+        self.is_test = self.check_is_test(secret_key)
         self.base_url = self.__trim_base_url(base_url) if base_url else API_BASE_URL
 
         # async httpx client with sensible defaults

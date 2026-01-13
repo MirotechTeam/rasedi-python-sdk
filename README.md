@@ -1,26 +1,29 @@
-# miropay-python-sdk #
-A python SDK for Miropay payment services.
+# rasedi_python_sdk 
+A python SDK for Rasedi payment services.
 
-### Installation ###
-You can install it using `pip install miropay-payment-sdk`
+### Installation 
+You can install it using `pip install rasedi_payment_sdk`
 
-### How to use ###
-First of all you will need `API_KEY` and `API_SECRET`. These credentials are provided inside of your panel.
+### How to use
+First of all you will need `PRIVATE_KEY` and `SECRET_KEY`. These credentials are provided inside of your panel.
 
-### Note ###
+### Note 
 If your key starts with `live_...` it means you are using live mode and if it starts with `test_...` it means you are using sand-box mode.
 
 ## Create payment client ##
-Once you provided the `API_KEY` and `API_SECRET` now you can create your payment client simply using `PaymentClient` class provided in the sdk.
+Once you provided the `PRIVATE_KEY` and `SECRET_KEY` now you can create your payment client simply using `PaymentClient` class provided in the sdk.
+
+Also there it a third parameter called `base_url` which is optional but recommended to set. It is our API end point's base url.
 
 For example:
-`from MiropayPaymentSDK import PaymentClient`
+`from RasediPaymentSDK import PaymentClient`
 
-`client = PaymentClient(api_key="YOUR_KEY", api_secret="YOUR_SECRET")`
+`client = PaymentClient(private_key="YOUR_KEY", secret_key="YOUR_SECRET", base_url="https://api.rasedi.com")`
+
 
 Now you are all set to use our payment system.
 
-## Create payment link ##
+## Create payment
 Now that you have created the `PaymentClient` you can use it to create payment links.
 
 You can use `ICreatePayment` provided to create a payment link.
@@ -28,11 +31,13 @@ It includes the fields bellow:
   - `amount : str` which will declare the amount of the payment.It should be a stringified number.
   - `title : str` which is the title of your payment link so you can keep track of it in your panel and customers will see the title once paying.
   - `description : str` which is the description of your payment link. customers will see the description once paying.
-  - `gateways : list[GATEWAY]` which it the selection of the `GATEWAY`s you want your customers use to pay. You can use `GATEWAY` enum provided in the sdk and use the gateways you desire.`from MiropayPaymentSDK import GATEWAY` 
+  - `gateways : list[GATEWAY]` which it the selection of the `GATEWAY`s you want your customers use to pay. You can use `GATEWAY` enum provided in the sdk and use the gateways you desire.`from RasediPaymentSDK import GATEWAY` 
   - `collectFeeFromCustomer : bool` with this set as `True` all service fees will be collected from your customer paying the payment link. This means service fees will be added to the `amount` you provided once paying.
   - `collectCustomerEmail : bool` with this set as `True` your customers should enter their email address once paying the payment link.
   - `collectCustomerPhoneNumber: bool` with this set as `True` your customers should enter their phone number once paying the payment link.
   - `redirectUrl : str` The url you want your customer to be returned after payment being `PAID` or `FAILED`.
+
+  - `callbackUrl : str` Your webhook's endpoint for our system to call when payment status 
 
   Now with every parameter explianed, here is an example of create payment link:
 
@@ -43,7 +48,8 @@ It includes the fields bellow:
             title="Test Payment",
             description="This is a test payment",
             gateways=[GATEWAY.FIB,GATEWAY.ZAIN],
-            redirectUrl="https://google.com",
+            redirectUrl="https://your-redirect-url.com",
+            callbackUrl="https://your-webhook-url.com",
             collectFeeFromCustomer=True,
             collectCustomerEmail=True,
             collectCustomerPhoneNumber=False
@@ -67,9 +73,61 @@ It includes the fields bellow:
 
   - `amount : str` the amount of payment with fees included (or excluded) based on the `collectFeeFromCustomer` field.
 
-  - `paidVia : Optional[str]`
+  - `status : PAYMENT_STATUS` The `PAYMENT_STATUS` is an enum which is provided in the library. `from RasediPaymentSDK import PAYMENT_STATUS`.
+
+  - `paidVia : Optional[str]` The gateway used to be paid if the payment is `PAID`
+
+  - `paidAt : Optional[str]` The date of payment being paid if it is `PAID`
+
+  - `redirectUrl :str` The redirect url you set it yourself on creation of payment
   
-  - `paidAt : Optional[str]`
-  - `redirectUrl :str`
-  - `status : PAYMENT_STATUS`
-  - `payoutAmount : Optional[str]`
+  - `payoutAmount : Optional[str]` Which is the amount you will recieve after the payment being `PAID` and fees excluded.
+
+# Get payment
+`get_payment_by_reference_code` method will get the payment you have created. For using this method all you need is the `referenceCode` provided in the response of your `create_payment` method.
+
+For example:
+
+`response = await client.get_payment_by_reference_code(reference_code="REFERENCE_CODE")`
+
+The `body` inside the `response` will be an instance of `IPaymentDetailsResponseBody` which contains these fields:
+
+  - `referenceCode : str` which is a unique id for your payment.
+
+  - `amount : str` the amount of payment with fees included (or excluded) based on the `collectFeeFromCustomer` field.
+
+  - `status : PAYMENT_STATUS` The `PAYMENT_STATUS` is an enum which is provided in the library. `from RasediPaymentSDK import PAYMENT_STATUS`.
+
+  - `paidVia : Optional[str]` The gateway used to be paid if the payment is `PAID`
+
+  - `paidAt : Optional[str]` The date of payment being paid if it is `PAID`
+
+  - `redirectUrl :str` The redirect url you set it yourself on creation of payment
+  
+  - `payoutAmount : Optional[str]` Which is the amount you will recieve after the payment being `PAID` and fees excluded.
+
+# Cancel payment
+
+`cancel_payment` method will cancel the payment you have created. For using this method all you need is the `referenceCode` provided in the response of your `create_payment` method.
+
+For example:
+
+`response = await client.cancel_payment(reference_code="REFERENCE_CODE")`
+
+The `body` inside the `response` will be an instance of `ICancelPaymentResponseBody` which contains these fields:
+
+  - `referenceCode : str` which is a unique id for your payment.
+
+  - `amount : str` the amount of payment with fees included (or excluded) based on the `collectFeeFromCustomer` field.
+
+  - `status : PAYMENT_STATUS` The `PAYMENT_STATUS` is an enum which is provided in the library. `from RasediPaymentSDK import PAYMENT_STATUS`.
+
+  - `paidVia : Optional[str]` The gateway used to be paid if the payment is `PAID`
+
+  - `paidAt : Optional[str]` The date of payment being paid if it is `PAID`
+
+  - `redirectUrl :str` The redirect url you set it yourself on creation of payment
+  
+  - `payoutAmount : Optional[str]` Which is the amount you will recieve after the payment being `PAID` and fees excluded.
+
+
