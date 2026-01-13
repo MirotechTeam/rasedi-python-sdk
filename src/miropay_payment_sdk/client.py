@@ -9,7 +9,7 @@ from cryptography.hazmat.primitives.asymmetric import ec, utils
 from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePublicKey
 from cryptography.hazmat.primitives import serialization
 
-from miropay_payment_sdk.interface import ICancelPaymentResponse, ICancelPaymentResponseBody, ICreatePayment, ICreatePaymentResponse, ICreatePaymentResponseBody, IPaymentDetailsResponse, IPaymentDetailsResponseBody
+from .interface import ICancelPaymentResponse, ICancelPaymentResponseBody, ICreatePayment, ICreatePaymentResponse, ICreatePaymentResponseBody, IPaymentDetailsResponse, IPaymentDetailsResponseBody
 
 from .auth import Auth
 from .constant import API_BASE_URL
