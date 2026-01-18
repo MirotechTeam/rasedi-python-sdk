@@ -2,7 +2,7 @@
 A python SDK for Rasedi payment services.
 
 ### Installation 
-You can install it using `pip install rasedi_payment_sdk`
+You can install it using `pip install rasedi-payment-sdk`
 
 ### How to use
 First of all you will need `PRIVATE_KEY` and `SECRET_KEY`. These credentials are provided inside of your panel.
