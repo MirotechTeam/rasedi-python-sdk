@@ -2,6 +2,7 @@
 from typing import Any, Dict, Mapping, Optional, Union, List
 import json
 import base64
+import warnings
 
 import httpx
 from cryptography.hazmat.primitives import hashes
@@ -120,6 +121,11 @@ class PaymentClient:
         )
 
     async def verify(self, payload: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        .. deprecated:: 1.0.0
+           Use status checking or webhooks instead.
+        """
+        warnings.warn("verify() is deprecated and will be removed in future versions. Use status checking or webhooks instead.", DeprecationWarning, stacklevel=2)
         # ensure public keys cached
         if not self.public_keys:
             resp = await self.get_public_keys()

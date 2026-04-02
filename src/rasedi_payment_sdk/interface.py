@@ -87,16 +87,28 @@ class IPublicKeysResponse(IHttpResponse[list[IPublicKeyResponseBody]]):
 
 @dataclass
 class IVerifyPayload:
+    """
+    .. deprecated:: 1.0.0
+       Use status checking or webhooks instead.
+    """
     keyId: str
     content: Optional[str]
 
 
 @dataclass
 class IVerifyPaymentResponseBody:
+    """
+    .. deprecated:: 1.0.0
+       Use status checking instead.
+    """
     referenceCode: str
     status : PAYMENT_STATUS
     payoutAmount: Optional[str]
 
 @dataclass
 class IVerifyPaymentResponse(IHttpResponse[IVerifyPaymentResponseBody]):
+    """
+    .. deprecated:: 1.0.0
+       Use status checking instead.
+    """
     pass
