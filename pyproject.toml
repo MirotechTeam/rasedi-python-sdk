@@ -1,6 +1,6 @@
 [project]
-name = "rasedi_payment_sdk"
-version = "1.0.6"
+name = "rasedi-payment-sdk"
+version = "1.0.7"
 description = "Official Python SDK for the Rasedi API"
 readme = "README.md"
 requires-python = ">=3.0"

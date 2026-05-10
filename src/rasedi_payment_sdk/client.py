@@ -10,7 +10,7 @@ from cryptography.hazmat.primitives.asymmetric import ec, utils
 from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePublicKey
 from cryptography.hazmat.primitives import serialization
 
-from .interface import ICancelPaymentResponse, ICancelPaymentResponseBody, ICreatePayment, ICreatePaymentResponse, ICreatePaymentResponseBody, IPaymentDetailsResponse, IPaymentDetailsResponseBody
+from .interface import ICancelPaymentResponse, ICancelPaymentResponseBody, ICreatePayment, ICreatePaymentResponse, ICreatePaymentResponseBody, IPaymentDetailsResponse, IPaymentDetailsResponseBody, IPaymentHistoryItem
 
 from .auth import Auth
 from .constant import API_BASE_URL
@@ -95,27 +95,36 @@ class PaymentClient:
     # ======================== Public Methods =======================
     async def get_payment_by_reference_code(self, reference_code: str) -> IPaymentDetailsResponse:
         resp = await self.__call(f"/status/{reference_code}", "GET", None)
+        body_data = dict(resp["body"])
+        if body_data.get("history"):
+            body_data["history"] = [IPaymentHistoryItem(**item) for item in body_data["history"]]
 
         return IPaymentDetailsResponse(
-            body=IPaymentDetailsResponseBody(**resp["body"]),
+            body=IPaymentDetailsResponseBody(**body_data),
             headers=resp["headers"],
             statusCode=resp["statusCode"],
         )
 
     async def create_payment(self, payload: ICreatePayment) -> ICreatePaymentResponse:
         resp = await self.__call("/create", "POST", json.dumps(payload.to_dict()))
+        body_data = dict(resp["body"])
+        if body_data.get("history"):
+            body_data["history"] = [IPaymentHistoryItem(**item) for item in body_data["history"]]
 
         return ICreatePaymentResponse(
-            body=ICreatePaymentResponseBody(**resp["body"]),
+            body=ICreatePaymentResponseBody(**body_data),
             headers=resp["headers"],
             statusCode=resp["statusCode"],
         )
     
     async def cancel_payment(self, reference_code: str) -> ICancelPaymentResponse:
         resp = await self.__call(f"/cancel/{reference_code}", "PATCH", None)
+        body_data = dict(resp["body"])
+        if body_data.get("history"):
+            body_data["history"] = [IPaymentHistoryItem(**item) for item in body_data["history"]]
 
         return ICancelPaymentResponse(
-            body=ICancelPaymentResponseBody(**resp["body"]),
+            body=ICancelPaymentResponseBody(**body_data),
             headers=resp["headers"],
             statusCode=resp["statusCode"],
         )

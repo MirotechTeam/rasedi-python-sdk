@@ -32,6 +32,19 @@ class ICreatePayment:
 
 
 @dataclass
+class IPaymentHistoryItem:
+    referenceCode: str
+    status: PAYMENT_STATUS
+    amount: str
+    gateway: Optional[str]
+    paidAt: Optional[str]
+    payoutAmount: Optional[str]
+    serviceFeeAmount: Optional[str]
+    gatewayFeeAmount: Optional[str]
+    expiresAt: Optional[str]
+
+
+@dataclass
 class ICreatePaymentResponseBody:
     referenceCode: str
     amount: str
@@ -40,6 +53,7 @@ class ICreatePaymentResponseBody:
     redirectUrl:str
     status: PAYMENT_STATUS
     payoutAmount: Optional[str]
+    history: Optional[list['IPaymentHistoryItem']]
 
     
     
@@ -57,6 +71,7 @@ class IPaymentDetailsResponseBody:
     redirectUrl:str
     status: PAYMENT_STATUS
     payoutAmount: Optional[str]
+    history: Optional[list['IPaymentHistoryItem']]
 
 @dataclass
 class IPaymentDetailsResponse(IHttpResponse[IPaymentDetailsResponseBody]):
@@ -71,6 +86,7 @@ class ICancelPaymentResponseBody:
     redirectUrl:str
     status: PAYMENT_STATUS
     payoutAmount: Optional[str]
+    history: Optional[list['IPaymentHistoryItem']]
 
 @dataclass
 class ICancelPaymentResponse(IHttpResponse[ICancelPaymentResponseBody]):

@@ -13,6 +13,7 @@ from .interface import (
     IVerifyPayload,
     IVerifyPaymentResponseBody,
     IVerifyPaymentResponse,
+    IPaymentHistoryItem,
 )
 from .enum import GATEWAY, PAYMENT_STATUS
 
@@ -31,6 +32,7 @@ __all__ = [
     "IVerifyPayload",
     "IVerifyPaymentResponseBody",
     "IVerifyPaymentResponse",
+    "IPaymentHistoryItem",
     "GATEWAY",
     "PAYMENT_STATUS",
 ]
